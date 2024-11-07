@@ -8,20 +8,27 @@ const app = express();
 app.use(cors());
 app.use(bodyParser.json());
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST,
-    user: process.env.DB_USER,
-    password: process.env.DB_PASSWORD,
-    database: process.env.DB_NAME
-});
+const dbConfig = {
+    host: 'db', // Ensure this matches the service name in docker-compose.yml
+    user: 'root',
+    password: 'root',
+    database: 'crud_app'
+};
 
-db.connect((err) => {
-    if (err) {
-        console.error('Database connection failed:', err.stack);
-        return;
-    }
-    console.log('Connected to MySQL database.');
-});
+const db = mysql.createConnection(dbConfig);
+
+function connectWithRetry() {
+    db.connect((err) => {
+        if (err) {
+            console.error('Database connection failed. Retrying in 5 seconds...', err);
+            setTimeout(connectWithRetry, 5000); // Retry every 5 seconds
+        } else {
+            console.log('Connected to MySQL database.');
+        }
+    });
+}
+
+connectWithRetry();
 
 // Create
 app.post('/items', (req, res) => {
@@ -59,6 +66,6 @@ app.delete('/items/:id', (req, res) => {
     });
 });
 
-app.listen(process.env.PORT, () => {
-    console.log(`Server running on port ${process.env.PORT}`);
+app.listen(5000, () => {
+    console.log(`Server running on port 5000`);
 });
