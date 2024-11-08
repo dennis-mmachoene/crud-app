@@ -40,6 +40,9 @@ coverage/
 *.sqlite
 *.tgz
 *.zip
+# Except the db-init/init.sql file
+!db-init/init.sql
+
 # Production build (React frontend)
 frontend/build/
 # Production build (Node backend)
