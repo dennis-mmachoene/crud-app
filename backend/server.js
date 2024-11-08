@@ -9,7 +9,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 const dbConfig = {
-    host: 'db', // Ensure this matches the service name in docker-compose.yml
+    host: 'db', // Matches the MySQL service name in docker-compose.yml
     user: 'root',
     password: 'root',
     database: 'crud_app'
@@ -30,6 +30,7 @@ function connectWithRetry() {
 
 connectWithRetry();
 
+// REST API Endpoints
 // Create
 app.post('/items', (req, res) => {
     const { name, description } = req.body;
